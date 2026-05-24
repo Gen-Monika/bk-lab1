@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}WeChat{% endblock %}</title>
+        <link href="{{ BK_STATIC_URL }}/static/bootstrap-3.3.4-dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body style="padding-top: 70px;">
+        {% block navbar %}
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#wechat-navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{{ SITE_URL }}">WeChat</a>
+                </div>
+                <div class="collapse navbar-collapse" id="wechat-navbar">
+                    <ul class="nav navbar-nav">
+                        <li {% block user %}{% endblock %}><a href="{{ SITE_URL }}user/">User</a></li>
+                        <li {% block status %}{% endblock %}><a href="{{ SITE_URL }}status/">Moments</a></li>
+                        <li {% block post %}{% endblock %}><a href="{{ SITE_URL }}post/">Post</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="https://ce.bktencent.com/console/accounts/logout">Exit</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        {% endblock %}
+
+        {% block content %}{% endblock %}
+
+        <script src="{{ BK_STATIC_URL }}/static/js/jquery-1.11.2.min.js"></script>
+        <script src="{{ BK_STATIC_URL }}/static/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
+    </body>
+</html>

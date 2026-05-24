@@ -4,5 +4,6 @@
 dev.env
 local_settings.py
 requirements.txt.bak
+.DS_Store
 __pycache__/
 *.pyc

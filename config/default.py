@@ -35,9 +35,9 @@ from blueapps.conf.log import get_logging_config_dict
 INSTALLED_APPS += (
     "bk_framework_api",
     "bk_framework_app",
+    "moments",
     "rest_framework",
     "drf_yasg",
-    
 )
 
 # 这里是默认的中间件，大部分情况下，不需要改动
