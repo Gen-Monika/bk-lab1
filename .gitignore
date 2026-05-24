@@ -1,0 +1,8 @@
+.venv/
+.uv-cache/
+.idea/
+dev.env
+local_settings.py
+requirements.txt.bak
+__pycache__/
+*.pyc
