@@ -253,10 +253,29 @@ a {
     background: #f8fafc;
 }
 
-.like-line {
-    margin: 12px 0;
+.like-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 4px;
+}
+
+.like-member {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
     color: var(--brand-dark);
+    background: #edf5ff;
+    border-radius: 999px;
     font-size: 13px;
+}
+
+.like-member img {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .comments {
@@ -275,6 +294,58 @@ a {
     padding: 10px 12px;
     background: #f8fafc;
     border-radius: 8px;
+}
+
+.comment-row {
+    grid-template-columns: 38px 1fr;
+    align-items: flex-start;
+}
+
+.comment-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #fff;
+}
+
+.comment-body {
+    display: grid;
+    gap: 5px;
+}
+
+.comment-meta,
+.comment-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.comment-meta span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.comment-body p {
+    margin: 0;
+    line-height: 1.55;
+}
+
+.reply-row {
+    margin-left: 46px;
+    margin-top: 8px;
+    background: #fff;
+    border: 1px solid var(--line);
+}
+
+.reply-form {
+    display: none;
+    margin-top: 8px;
+}
+
+.reply-form.is-open {
+    display: grid;
 }
 
 .comment-form {
@@ -478,5 +549,9 @@ a {
     .table-head,
     .table-row {
         grid-template-columns: 1fr;
+    }
+
+    .reply-row {
+        margin-left: 18px;
     }
 }

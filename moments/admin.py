@@ -19,8 +19,8 @@ class StatusAdmin(admin.ModelAdmin):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ("id", "status", "user", "text", "created_at")
-    search_fields = ("text", "user__username", "user__nickname")
+    list_display = ("id", "status", "user", "parent", "text", "created_at")
+    search_fields = ("text", "user__username", "user__nickname", "parent__text")
 
 
 @admin.register(Like)

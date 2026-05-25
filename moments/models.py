@@ -52,6 +52,9 @@ class ChatUser(models.Model):
 class Comment(models.Model):
     status = models.ForeignKey(Status, models.CASCADE, related_name="comments")
     user = models.ForeignKey(ChatUser, models.CASCADE, related_name="comments")
+    parent = models.ForeignKey(
+        "self", models.CASCADE, null=True, blank=True, related_name="replies"
+    )
     text = models.CharField(max_length=180)
     created_at = models.DateTimeField(auto_now_add=True)
 

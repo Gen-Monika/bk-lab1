@@ -63,3 +63,24 @@ Upgraded the original WeChat demo into CialloChat, a more complete in-app social
 - Default administrator credentials are documented in README for course demonstration.
 - Production-like deployments can override the administrator password with `CIALLO_ADMIN_PASSWORD`.
 - Visual assets are curated rather than copied in full.
+
+## CialloChat Interaction Polish
+
+Date: 2026-05-25
+
+### Summary
+
+Added a small interaction-focused iteration after local QA: richer avatar/background choices, clearer like-member display, and threaded comment replies.
+
+### Changes
+
+- Added Nene and Meguru themed avatar choices from the course picture set.
+- Renamed the lighthouse background options so their labels match the actual scenery.
+- Added the feather sky background to the profile background selector.
+- Upgraded the moment feed to display like members with avatars.
+- Upgraded comments to show commenter avatar and timestamp.
+- Added one-level replies so users can reply to a selected comment.
+
+### Verification
+
+- Added automated coverage for the new asset choices, like-member rendering, and comment reply flow.

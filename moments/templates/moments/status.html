@@ -41,31 +41,54 @@
                             <form method="post" action="{{ SITE_URL }}status/{{ status.id }}/like/">
                                 {% csrf_token %}
                                 <button class="chip {% if status.id in liked_status_ids %}active{% endif %}" type="submit">
-                                    {% if status.id in liked_status_ids %}Liked{% else %}Like{% endif %} · {{ status.likes.count }}
+                                    {% if status.id in liked_status_ids %}Liked{% else %}Like{% endif %} &middot; {{ status.likes.count }}
                                 </button>
                             </form>
-                            <span class="chip muted">Comments · {{ status.comments.count }}</span>
+                            <span class="chip muted">Comments &middot; {{ status.comments.count }}</span>
                         </div>
 
                         {% if status.likes.all %}
-                            <p class="like-line">
-                                Liked by
+                            <div class="like-members" aria-label="Liked members">
                                 {% for like in status.likes.all %}
-                                    {{ like.user.nickname }}{% if not forloop.last %}, {% endif %}
+                                    <span class="like-member">
+                                        <img src="{{ BK_STATIC_URL }}/static/{{ like.user.avatar }}" alt="{{ like.user.nickname }}">
+                                        {{ like.user.nickname }}
+                                    </span>
                                 {% endfor %}
-                            </p>
+                            </div>
                         {% endif %}
 
                         <div class="comments">
                             {% for comment in status.comments.all %}
-                                <div class="comment-row">
-                                    <span><strong>{{ comment.user.nickname }}</strong> {{ comment.text }}</span>
-                                    {% if chat_user.is_admin or comment.user_id == chat_user.id or status.chat_user_id == chat_user.id %}
-                                        <form method="post" action="{{ SITE_URL }}comment/{{ comment.id }}/delete/">
+                                <div class="comment-row {% if comment.parent_id %}reply-row{% endif %}">
+                                    <img class="comment-avatar" src="{{ BK_STATIC_URL }}/static/{{ comment.user.avatar }}" alt="{{ comment.user.nickname }}">
+                                    <div class="comment-body">
+                                        <div class="comment-meta">
+                                            <strong>{{ comment.user.nickname }}</strong>
+                                            {% if comment.parent_id %}
+                                                <span>to {{ comment.parent.user.nickname }} &middot; {{ comment.created_at|date:"Y-m-d H:i" }}</span>
+                                            {% else %}
+                                                <span>{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+                                            {% endif %}
+                                        </div>
+                                        <p>{{ comment.text }}</p>
+                                        <div class="comment-tools">
+                                            <button class="text-button" type="button" data-reply-target="reply-{{ comment.id }}">Reply</button>
+                                            {% if chat_user.is_admin or comment.user_id == chat_user.id or status.chat_user_id == chat_user.id %}
+                                                <form method="post" action="{{ SITE_URL }}comment/{{ comment.id }}/delete/">
+                                                    {% csrf_token %}
+                                                    <button class="text-button danger" type="submit">Delete</button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+
+                                        <form id="reply-{{ comment.id }}" class="comment-form reply-form" method="post" action="{{ SITE_URL }}status/{{ status.id }}/comment/">
                                             {% csrf_token %}
-                                            <button class="text-button danger" type="submit">Delete</button>
+                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                            <input type="text" name="text" maxlength="180" placeholder="Reply to {{ comment.user.nickname }}">
+                                            <button type="submit">Reply</button>
                                         </form>
-                                    {% endif %}
+                                    </div>
                                 </div>
                             {% empty %}
                                 <p class="empty-inline">No comments yet.</p>
@@ -89,4 +112,19 @@
             </div>
         {% endif %}
     </section>
+    <script>
+        document.querySelectorAll("[data-reply-target]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                var form = document.getElementById(button.getAttribute("data-reply-target"));
+                if (!form) {
+                    return;
+                }
+                form.classList.toggle("is-open");
+                var input = form.querySelector("input[name='text']");
+                if (input && form.classList.contains("is-open")) {
+                    input.focus();
+                }
+            });
+        });
+    </script>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.db.models import Prefetch
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -66,9 +67,10 @@ def show_user(request):
 
 def show_status(request):
     chat_user = get_current_chat_user(request)
+    comments = Comment.objects.select_related("user", "parent", "parent__user")
     statuses = (
         Status.objects.select_related("chat_user", "user")
-        .prefetch_related("likes", "likes__user", "comments", "comments__user")
+        .prefetch_related("likes", "likes__user", Prefetch("comments", queryset=comments))
         .all()
     )
     liked_status_ids = set(Like.objects.filter(user=chat_user).values_list("status_id", flat=True))
@@ -119,8 +121,11 @@ def add_comment(request, status_id):
         comment = form.save(commit=False)
         comment.status = status
         comment.user = chat_user
+        parent_id = request.POST.get("parent_id")
+        if parent_id:
+            comment.parent = get_object_or_404(Comment, id=parent_id, status=status)
         comment.save()
-        messages.success(request, "Comment added.")
+        messages.success(request, "Reply added." if comment.parent_id else "Comment added.")
     else:
         messages.error(request, "Comment cannot be empty.")
     return redirect("moments:status")

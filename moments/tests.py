@@ -5,6 +5,7 @@ from django.urls import reverse
 from blueapps.account.models import User
 from moments import views
 
+from moments.assets import AVATAR_CHOICES, BACKGROUND_CHOICES
 from moments.forms import RegisterForm, StatusForm
 from moments.models import ChatUser, Comment, Like, Status
 from moments.services import ensure_default_admin
@@ -31,6 +32,12 @@ class CialloChatModelTests(TestCase):
 
 
 class CialloChatFormTests(TestCase):
+    def test_new_avatar_and_background_choices_are_available(self):
+        self.assertIn(("ciallo/characters/nene_3.png", "Nene"), AVATAR_CHOICES)
+        self.assertIn(("ciallo/characters/meguru_master_1.png", "Meguru"), AVATAR_CHOICES)
+        self.assertIn(("ciallo/bg/bg063.png", "Feather sky"), BACKGROUND_CHOICES)
+        self.assertIn(("ciallo/bg/bg064_morning.png", "Sunny lighthouse"), BACKGROUND_CHOICES)
+
     def test_register_rejects_duplicate_username(self):
         ChatUser.objects.create(username="alice", password_hash="hash", nickname="Alice")
         form = RegisterForm(
@@ -96,6 +103,11 @@ class CialloChatViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Comment.objects.filter(status=status, user=self.user, text="Nice").exists())
 
+        response = self.client.get(reverse("moments:status"))
+        self.assertContains(response, self.user.nickname)
+        self.assertContains(response, self.user.avatar)
+        self.assertContains(response, "Liked members")
+
     def test_post_with_uploaded_image(self):
         upload = SimpleUploadedFile("moment.png", b"image-bytes", content_type="image/png")
         response = self.client.post(
@@ -105,3 +117,36 @@ class CialloChatViewTests(TestCase):
         self.assertEqual(response.status_code, 302)
         status = Status.objects.get(text="Uploaded")
         self.assertTrue(status.uploaded_image.name.startswith("ciallo_uploads/"))
+
+    def test_reply_to_comment_flow(self):
+        other = ChatUser.objects.create(
+            username="bob",
+            password_hash="hash",
+            nickname="Bob",
+            avatar="ciallo/characters/murasame.png",
+            cover="ciallo/bg/sky.png",
+        )
+        status = Status.objects.create(chat_user=self.user, text="Reply target")
+        comment = Comment.objects.create(status=status, user=other, text="First comment")
+
+        response = self.client.post(
+            reverse("moments:add_comment", args=[status.id]),
+            {"text": "Nested reply", "parent_id": comment.id},
+        )
+        self.assertEqual(response.status_code, 302)
+        reply = Comment.objects.get(text="Nested reply")
+        self.assertEqual(reply.parent, comment)
+
+        response = self.client.post(
+            reverse("moments:add_comment", args=[status.id]),
+            {"text": "Reply to reply", "parent_id": reply.id},
+        )
+        self.assertEqual(response.status_code, 302)
+        second_reply = Comment.objects.get(text="Reply to reply")
+        self.assertEqual(second_reply.parent, reply)
+
+        response = self.client.get(reverse("moments:status"))
+        self.assertContains(response, "to Bob")
+        self.assertContains(response, "Reply to Alice")
+        self.assertContains(response, "Nested reply")
+        self.assertContains(response, "Reply to reply")

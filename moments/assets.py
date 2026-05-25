@@ -1,6 +1,8 @@
 AVATAR_CHOICES = [
     ("ciallo/characters/murasame.png", "Murasame"),
     ("ciallo/characters/noa.png", "Noa"),
+    ("ciallo/characters/nene_3.png", "Nene"),
+    ("ciallo/characters/meguru_master_1.png", "Meguru"),
     ("ciallo/characters/amane_2.png", "Amane"),
     ("ciallo/characters/kaguya.png", "Kaguya"),
     ("ciallo/characters/kurumi.png", "Kurumi"),
@@ -10,10 +12,12 @@ AVATAR_CHOICES = [
 BACKGROUND_CHOICES = [
     ("ciallo/bg/clubroom.png", "Clubroom"),
     ("ciallo/bg/sky.png", "Blue sky"),
+    ("ciallo/bg/bg063.png", "Feather sky"),
     ("ciallo/bg/beach.png", "Beach"),
     ("ciallo/bg/kaguya_house.png", "Kaguya house"),
-    ("ciallo/bg/bg064_day.png", "Sunny street"),
-    ("ciallo/bg/bg064_evening.png", "Evening street"),
+    ("ciallo/bg/bg064_morning.png", "Sunny lighthouse"),
+    ("ciallo/bg/bg064_day.png", "Moonlit lighthouse"),
+    ("ciallo/bg/bg064_evening.png", "Cloudy lighthouse"),
 ]
 
 POST_IMAGE_CHOICES = [
