@@ -12,19 +12,17 @@ specific language governing permissions and limitations under the License.
 """
 
 from django.contrib import admin
+from django.conf import settings
+from django.views.static import serve
 from django.urls import include, path, re_path
-
-from moments.views import home, show_status, show_user, submit_post
 
 urlpatterns = [
     # 出于安全考虑，默认屏蔽admin访问路径。
     # 开启前请修改路径随机内容，降低被猜测命中几率，提升安全性
     # re_path(r'^admin_'{6个以上任意字符串}'/', admin.site.urls),
     path("admin/", admin.site.urls),
-    path("", home),
-    path("user/", show_user),
-    path("status/", show_status),
-    path("post/", submit_post),
+    path("", include("moments.urls")),
+    re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
     # 如果你习惯使用 Django 模板，请在 bk_framework_app 里开发你的应用
     re_path(r"^", include("bk_framework_app.urls")),
     # 如果你通过drf来开发后端接口，请在 bk_framework_api 里开发你的应用

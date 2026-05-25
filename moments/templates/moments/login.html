@@ -1,0 +1,24 @@
+{% extends "moments/base.html" %}
+
+{% block title %}Login | CialloChat{% endblock %}
+
+{% block content %}
+    <section class="auth-page" style="background-image: linear-gradient(90deg, rgba(12, 18, 31, .76), rgba(12, 18, 31, .28)), url('{{ BK_STATIC_URL }}/static/ciallo/bg/kaguya_house.png');">
+        <div class="auth-card">
+            <p class="eyebrow">In-App Account</p>
+            <h1>Switch CialloChat user</h1>
+            <p class="muted-text">BlueKing keeps the app gate. CialloChat manages social identities inside the database.</p>
+            <form class="ciallo-form" method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <label>Username</label>
+                {{ form.username }}
+                <label>Password</label>
+                {{ form.password }}
+                <button class="btn-primary-ciallo" type="submit">Login</button>
+            </form>
+            <p class="auth-note">Default course admin: <strong>admin</strong> / <strong>admin123456</strong></p>
+            <a class="text-link" href="{{ SITE_URL }}register/">Create a new account</a>
+        </div>
+    </section>
+{% endblock %}

@@ -23,6 +23,7 @@ RUN_MODE = "PRODUCT"
 
 # CE production apps are served with an app path prefix.
 BK_STATIC_URL = SITE_URL.rstrip("/")
+MEDIA_URL = "%smedia/" % SITE_URL
 
 # 只对正式环境日志级别进行配置，可以在这里修改
 # from blueapps.conf.log import set_log_level # noqa

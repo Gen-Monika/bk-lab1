@@ -1,0 +1,40 @@
+{% extends "moments/base.html" %}
+
+{% block title %}Admin | CialloChat{% endblock %}
+
+{% block content %}
+    <section class="page-shell">
+        <div class="panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">Admin Panel</p>
+                    <h1>Content moderation</h1>
+                </div>
+                <a class="text-link" href="{{ SITE_URL }}admin/">Django admin</a>
+            </div>
+            <div class="admin-table">
+                <div class="table-head">
+                    <span>ID</span>
+                    <span>Author</span>
+                    <span>Content</span>
+                    <span>Stats</span>
+                    <span>Action</span>
+                </div>
+                {% for status in statuses %}
+                    <div class="table-row">
+                        <span>#{{ status.id }}</span>
+                        <span>{{ status.author }}</span>
+                        <span>{{ status.text }}</span>
+                        <span>{{ status.likes.count }} likes / {{ status.comments.count }} comments</span>
+                        <form method="post" action="{{ SITE_URL }}status/{{ status.id }}/delete/">
+                            {% csrf_token %}
+                            <button class="text-button danger" type="submit">Delete</button>
+                        </form>
+                    </div>
+                {% empty %}
+                    <p class="empty-inline">No content to manage.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

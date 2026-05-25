@@ -34,5 +34,32 @@ Implemented the L1 sample SaaS feature based on the BlueKing Django framework: a
 
 ## Notes
 
-- Visiting `/user/` or `/post/` can fail before a corresponding `WeChatUser` record exists. This is expected for the course demo.
-- After logging in, use `/admin/` to add a `WeChatUser` and bind it to the current BlueKing user before testing post submission.
+- These notes describe the first L1 implementation. They were superseded by the CialloChat upgrade below.
+- The upgraded version creates and switches in-app `ChatUser` accounts directly, so manual `WeChatUser` binding is no longer part of the normal workflow.
+
+## CialloChat Upgrade
+
+Date: 2026-05-25
+
+### Summary
+
+Upgraded the original WeChat demo into CialloChat, a more complete in-app social feed that keeps BlueKing login as the outer platform access control and uses database-backed CialloChat accounts inside the application.
+
+### Changes
+
+- Renamed the user-facing product from WeChat to CialloChat.
+- Added in-app account registration, login, logout and profile editing.
+- Added a default course administrator account through a database migration.
+- Added real moments posting with preset images and uploaded images.
+- Added real likes and comments with database persistence.
+- Added content deletion permissions for owners and administrators.
+- Added a CialloChat admin panel for feed moderation.
+- Added user action logging middleware for request behavior collection.
+- Added selected visual assets and a redesigned responsive UI.
+- Added README documentation and expanded automated tests.
+
+### Maintenance Notes
+
+- Default administrator credentials are documented in README for course demonstration.
+- Production-like deployments can override the administrator password with `CIALLO_ADMIN_PASSWORD`.
+- Visual assets are curated rather than copied in full.

@@ -7,3 +7,6 @@ requirements.txt.bak
 .DS_Store
 __pycache__/
 *.pyc
+media/
+qa-server.out
+qa-server.err

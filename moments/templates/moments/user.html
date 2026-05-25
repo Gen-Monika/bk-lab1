@@ -1,36 +1,55 @@
 {% extends "moments/base.html" %}
 
-{% block title %}User{% endblock %}
-{% block user %}class="active"{% endblock %}
+{% block title %}Profile | CialloChat{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2">
-                <img src="{{ BK_STATIC_URL }}/static/image/{{ user.pic }}" class="img-responsive img-thumbnail" alt="{{ user.user.username }}">
-            </div>
-            <div class="col-md-10">
-                <h1 style="font-size:70px;">{{ user.user.username }}</h1>
-                <p style="font-size:50px;">Email: {{ user.email }}</p>
-            </div>
+    <section class="profile-cover" style="background-image: linear-gradient(90deg, rgba(10, 18, 30, .72), rgba(10, 18, 30, .16)), url('{{ BK_STATIC_URL }}/static/{{ chat_user.cover }}');">
+        <img class="profile-avatar" src="{{ BK_STATIC_URL }}/static/{{ chat_user.avatar }}" alt="{{ chat_user.nickname }}">
+        <div>
+            <p class="eyebrow">CialloChat Profile</p>
+            <h1>{{ chat_user.nickname }}</h1>
+            <p>@{{ chat_user.username }}{% if chat_user.is_admin %} · Administrator{% endif %}</p>
+            <p>{{ chat_user.bio|default:"No bio yet." }}</p>
         </div>
-        <div class="row" style="margin-top:62px;">
-            <div class="col-md-4">
-                <p style="font-size:50px;">Region</p>
+    </section>
+
+    <section class="profile-grid">
+        <div class="panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">Customize</p>
+                    <h2>Edit profile</h2>
+                </div>
             </div>
-            <div class="col-md-8">
-                <p style="font-size:50px; color:gray;">{{ user.region }}</p>
-            </div>
+            <form class="ciallo-form" method="post">
+                {% csrf_token %}
+                <label>Nickname</label>
+                {{ form.nickname }}
+                <label>Avatar</label>
+                {{ form.avatar }}
+                <label>Background</label>
+                {{ form.cover }}
+                <label>Bio</label>
+                {{ form.bio }}
+                <button class="btn-primary-ciallo" type="submit">Save profile</button>
+            </form>
         </div>
-        <hr>
-        <div class="row">
-            <div class="col-md-4">
-                <p style="font-size:50px;">What's up</p>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">History</p>
+                    <h2>Your moments</h2>
+                </div>
             </div>
-            <div class="col-md-8">
-                <p style="font-size:50px; color:gray;">{{ user.motto }}</p>
-            </div>
+            {% for status in statuses %}
+                <div class="mini-status">
+                    <p>{{ status.text }}</p>
+                    <span>{{ status.pub_time|date:"Y-m-d H:i" }} · {{ status.likes.count }} likes · {{ status.comments.count }} comments</span>
+                </div>
+            {% empty %}
+                <p class="empty-inline">You have not posted anything yet.</p>
+            {% endfor %}
         </div>
-        <hr>
-    </div>
+    </section>
 {% endblock %}

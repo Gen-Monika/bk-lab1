@@ -1,16 +1,33 @@
 {% extends "moments/base.html" %}
 
-{% block title %}Post{% endblock %}
-{% block post %}class="active"{% endblock %}
+{% block title %}Post | CialloChat{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <form method="post">
+    <section class="page-shell narrow">
+        <div class="panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">New Moment</p>
+                    <h1>Share something</h1>
+                </div>
+                <a class="text-link" href="{{ SITE_URL }}status/">Back to feed</a>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="ciallo-form">
                 {% csrf_token %}
-                <textarea class="form-control" rows="5" name="text"></textarea>
-                <button style="float:right; margin-top:22px;" type="submit" class="btn btn-primary btn-lg">Submit</button>
+                <label>Text</label>
+                {{ form.text }}
+                {% if form.text.errors %}<p class="form-error">{{ form.text.errors.0 }}</p>{% endif %}
+
+                <label>Preset image</label>
+                {{ form.pics }}
+
+                <label>Upload image</label>
+                {{ form.uploaded_image }}
+                {% if form.uploaded_image.errors %}<p class="form-error">{{ form.uploaded_image.errors.0 }}</p>{% endif %}
+
+                <button class="btn-primary-ciallo" type="submit">Publish</button>
             </form>
         </div>
-    </div>
+    </section>
 {% endblock %}

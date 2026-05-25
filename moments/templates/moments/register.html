@@ -1,0 +1,30 @@
+{% extends "moments/base.html" %}
+
+{% block title %}Register | CialloChat{% endblock %}
+
+{% block content %}
+    <section class="auth-page" style="background-image: linear-gradient(90deg, rgba(12, 18, 31, .76), rgba(12, 18, 31, .28)), url('{{ BK_STATIC_URL }}/static/ciallo/bg/bg064_day.png');">
+        <div class="auth-card wide">
+            <p class="eyebrow">New Identity</p>
+            <h1>Create account</h1>
+            <form class="ciallo-form" method="post">
+                {% csrf_token %}
+                <label>Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}<p class="form-error">{{ form.username.errors.0 }}</p>{% endif %}
+                <label>Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}<p class="form-error">{{ form.password.errors.0 }}</p>{% endif %}
+                <label>Nickname</label>
+                {{ form.nickname }}
+                <label>Avatar</label>
+                {{ form.avatar }}
+                <label>Background</label>
+                {{ form.cover }}
+                <label>Bio</label>
+                {{ form.bio }}
+                <button class="btn-primary-ciallo" type="submit">Create and login</button>
+            </form>
+        </div>
+    </section>
+{% endblock %}

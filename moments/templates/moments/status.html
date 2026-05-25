@@ -1,43 +1,92 @@
 {% extends "moments/base.html" %}
 
-{% block title %}Moments{% endblock %}
-{% block status %}class="active"{% endblock %}
+{% block title %}Moments | CialloChat{% endblock %}
 
 {% block content %}
-    {% for status in statuses %}
-        <div class="container">
-            <div class="row">
-                <div class="col-md-2">
-                    <img src="{{ BK_STATIC_URL }}/static/image/{{ status.user.pic }}" class="img-responsive img-thumbnail" alt="{{ status.user }}">
-                </div>
-                <div class="col-md-10">
-                    <h1 style="font-size:70px;">{{ status.user }}</h1>
-                    <p style="font-size:50px;">{{ status.text }}</p>
-                    {% if status.pics %}
-                        <div class="col-md-8">
-                            <img src="{{ BK_STATIC_URL }}/static/image/{{ status.pics }}" class="img-responsive" alt="Moment image">
-                        </div>
-                    {% endif %}
+    <section class="feed-hero" style="background-image: linear-gradient(90deg, rgba(18, 29, 44, .78), rgba(18, 29, 44, .18)), url('{{ BK_STATIC_URL }}/static/ciallo/bg/sky.png');">
+        <div>
+            <p class="eyebrow">Moments Feed</p>
+            <h1>Ciallo, {{ chat_user.nickname }}</h1>
+            <p>Post, like, comment, and manage a small but complete social feed.</p>
+        </div>
+        <a class="btn-primary-ciallo" href="{{ SITE_URL }}post/">New Moment</a>
+    </section>
 
-                    <div class="col-md-12">
-                        <p style="float:left; color:gray; font-size:30px;">{{ status.pub_time|date:"m-d-Y H:i:s" }}</p>
-                        <button style="float:right; background-color:gray;" class="btn btn-default">
-                            <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true" style="color:white;"></span>
-                        </button>
-                    </div>
-                    <div class="col-md-12" style="background-color:gray; padding-top:20px;">
-                        <p style="font-size:30px;"><span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span> Monkey, Serpent</p>
-                        <hr>
-                        <p style="font-size:30px;">Monkey: Great!</p>
-                        <p style="font-size:30px;">Po@Monkey: Thanks!</p>
-                    </div>
-                </div>
+    <section class="feed-layout">
+        {% if statuses %}
+            <div class="feed-list">
+                {% for status in statuses %}
+                    <article class="moment-card">
+                        <div class="moment-top">
+                            <img class="avatar" src="{{ BK_STATIC_URL }}/static/{{ status.chat_user.avatar|default:'ciallo/characters/murasame.png' }}" alt="{{ status.author }}">
+                            <div>
+                                <h2>{{ status.author }}</h2>
+                                <p>{{ status.pub_time|date:"Y-m-d H:i" }}</p>
+                            </div>
+                            {% if chat_user.is_admin or status.chat_user_id == chat_user.id %}
+                                <form method="post" action="{{ SITE_URL }}status/{{ status.id }}/delete/">
+                                    {% csrf_token %}
+                                    <button class="icon-button danger" type="submit">Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        <p class="moment-text">{{ status.text }}</p>
+                        {% if status.uploaded_image %}
+                            <img class="moment-image" src="{{ status.uploaded_image.url }}" alt="Uploaded moment image">
+                        {% elif status.pics %}
+                            <img class="moment-image" src="{{ BK_STATIC_URL }}/static/{{ status.pics }}" alt="Moment image">
+                        {% endif %}
+
+                        <div class="moment-actions">
+                            <form method="post" action="{{ SITE_URL }}status/{{ status.id }}/like/">
+                                {% csrf_token %}
+                                <button class="chip {% if status.id in liked_status_ids %}active{% endif %}" type="submit">
+                                    {% if status.id in liked_status_ids %}Liked{% else %}Like{% endif %} · {{ status.likes.count }}
+                                </button>
+                            </form>
+                            <span class="chip muted">Comments · {{ status.comments.count }}</span>
+                        </div>
+
+                        {% if status.likes.all %}
+                            <p class="like-line">
+                                Liked by
+                                {% for like in status.likes.all %}
+                                    {{ like.user.nickname }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+
+                        <div class="comments">
+                            {% for comment in status.comments.all %}
+                                <div class="comment-row">
+                                    <span><strong>{{ comment.user.nickname }}</strong> {{ comment.text }}</span>
+                                    {% if chat_user.is_admin or comment.user_id == chat_user.id or status.chat_user_id == chat_user.id %}
+                                        <form method="post" action="{{ SITE_URL }}comment/{{ comment.id }}/delete/">
+                                            {% csrf_token %}
+                                            <button class="text-button danger" type="submit">Delete</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            {% empty %}
+                                <p class="empty-inline">No comments yet.</p>
+                            {% endfor %}
+                        </div>
+
+                        <form class="comment-form" method="post" action="{{ SITE_URL }}status/{{ status.id }}/comment/">
+                            {% csrf_token %}
+                            <input type="text" name="text" maxlength="180" placeholder="Write a comment">
+                            <button type="submit">Send</button>
+                        </form>
+                    </article>
+                {% endfor %}
             </div>
-            <hr>
-        </div>
-    {% empty %}
-        <div class="container">
-            <p class="text-muted" style="font-size:30px;">No moments yet.</p>
-        </div>
-    {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <img src="{{ BK_STATIC_URL }}/static/ciallo/characters/nene_sign.jpg" alt="No moments">
+                <h2>No moments yet</h2>
+                <p>Be the first one to say Ciallo.</p>
+                <a class="btn-primary-ciallo" href="{{ SITE_URL }}post/">Create first moment</a>
+            </div>
+        {% endif %}
+    </section>
 {% endblock %}

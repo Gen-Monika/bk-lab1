@@ -23,6 +23,7 @@ RUN_MODE = "STAGING"
 
 # CE staging apps are served under /stag--{APP_CODE}/.
 BK_STATIC_URL = SITE_URL.rstrip("/")
+MEDIA_URL = "%smedia/" % SITE_URL
 
 # 只对预发布环境日志级别进行配置，可以在这里修改
 # from blueapps.conf.log import set_log_level # noqa

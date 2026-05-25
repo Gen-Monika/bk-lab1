@@ -66,7 +66,7 @@ INSTALLED_APPS += (
 # )
 
 # 自定义中间件
-MIDDLEWARE += ()  # noqa
+MIDDLEWARE += ("moments.middleware.UserActionLogMiddleware",)  # noqa
 
 # 默认数据库AUTO字段类型
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
@@ -81,6 +81,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 STATIC_VERSION = "1.0"
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
+CIALLO_ADMIN_PASSWORD = os.getenv("CIALLO_ADMIN_PASSWORD", "admin123456")
 
 # CELERY 开关，使用时请改为 True，修改项目目录下的 Procfile 文件，添加以下两行命令：
 # worker: python manage.py celery worker -l info

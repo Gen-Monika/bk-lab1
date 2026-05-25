@@ -1,41 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}WeChat{% endblock %}</title>
+        <title>{% block title %}CialloChat{% endblock %}</title>
         <link href="{{ BK_STATIC_URL }}/static/bootstrap-3.3.4-dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="{{ BK_STATIC_URL }}/static/ciallo/css/ciallo.css" rel="stylesheet">
     </head>
-    <body style="padding-top: 70px;">
-        {% block navbar %}
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#wechat-navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{{ SITE_URL }}">WeChat</a>
-                </div>
-                <div class="collapse navbar-collapse" id="wechat-navbar">
-                    <ul class="nav navbar-nav">
-                        <li {% block user %}{% endblock %}><a href="{{ SITE_URL }}user/">User</a></li>
-                        <li {% block status %}{% endblock %}><a href="{{ SITE_URL }}status/">Moments</a></li>
-                        <li {% block post %}{% endblock %}><a href="{{ SITE_URL }}post/">Post</a></li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="https://ce.bktencent.com/console/accounts/logout">Exit</a></li>
-                    </ul>
-                </div>
+    <body class="ciallo-body">
+        <nav class="ciallo-nav">
+            <a class="brand" href="{{ SITE_URL }}">CialloChat</a>
+            <div class="nav-links">
+                <a href="{{ SITE_URL }}status/">Moments</a>
+                <a href="{{ SITE_URL }}post/">Post</a>
+                <a href="{{ SITE_URL }}user/">Profile</a>
+                {% if chat_user and chat_user.is_admin %}
+                    <a href="{{ SITE_URL }}admin-panel/">Admin</a>
+                {% endif %}
+            </div>
+            <div class="nav-user">
+                {% if chat_user %}
+                    <span>{{ chat_user.nickname }}</span>
+                    <a href="{{ SITE_URL }}login/">Switch</a>
+                    <a href="{{ SITE_URL }}logout/">Logout</a>
+                {% else %}
+                    <a href="{{ SITE_URL }}login/">Login</a>
+                {% endif %}
             </div>
         </nav>
-        {% endblock %}
 
-        {% block content %}{% endblock %}
+        {% if messages %}
+            <div class="flash-wrap">
+                {% for message in messages %}
+                    <div class="flash {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="site-footer">
+            <span>Course demo only. Visual assets belong to their respective rights holders.</span>
+        </footer>
         <script src="{{ BK_STATIC_URL }}/static/js/jquery-1.11.2.min.js"></script>
         <script src="{{ BK_STATIC_URL }}/static/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
     </body>
