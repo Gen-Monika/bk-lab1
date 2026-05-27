@@ -30,6 +30,10 @@ class CialloChatModelTests(TestCase):
         with self.assertRaises(Exception):
             Like.objects.create(user=user, status=status)
 
+    def test_missing_legacy_uploaded_file_has_no_image_source(self):
+        status = Status(text="Legacy missing image", uploaded_image="ciallo_uploads/missing-image.png")
+        self.assertEqual(status.uploaded_image_src, "")
+
 
 class CialloChatFormTests(TestCase):
     def test_new_avatar_and_background_choices_are_available(self):
@@ -116,7 +120,12 @@ class CialloChatViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         status = Status.objects.get(text="Uploaded")
-        self.assertTrue(status.uploaded_image.name.startswith("ciallo_uploads/"))
+        self.assertFalse(status.uploaded_image)
+        self.assertTrue(status.uploaded_image_data_url.startswith("data:image/png;base64,"))
+        self.assertIn("aW1hZ2UtYnl0ZXM=", status.uploaded_image_src)
+
+        response = self.client.get(reverse("moments:status"))
+        self.assertContains(response, "data:image/png;base64,")
 
     def test_reply_to_comment_flow(self):
         other = ChatUser.objects.create(

@@ -84,3 +84,22 @@ Added a small interaction-focused iteration after local QA: richer avatar/backgr
 ### Verification
 
 - Added automated coverage for the new asset choices, like-member rendering, and comment reply flow.
+
+## Uploaded Image Persistence Fix
+
+Date: 2026-05-27
+
+### Summary
+
+Fixed a deployment persistence issue where user-uploaded moment images could disappear after a BlueKing rebuild because they were stored only in the container media directory.
+
+### Changes
+
+- Added a database-backed uploaded image data URL field for moments.
+- Converted new uploaded images to data URLs during post submission.
+- Kept the old media file field as a compatibility fallback for existing records.
+- Updated the feed template and README to describe the deployment-safe storage behavior.
+
+### Verification
+
+- Added automated coverage confirming uploaded images are rendered from database data URLs.

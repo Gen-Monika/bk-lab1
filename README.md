@@ -69,7 +69,7 @@ The BlueKing app descriptor runs database migrations in the `preRelease` hook:
 python manage.py migrate --no-input
 ```
 
-Uploaded images are stored under `media/ciallo_uploads/`. Preset visual assets are stored under `moments/static/ciallo/`.
+Uploaded moment images are encoded into database-backed data URLs so user posts survive BlueKing container rebuilds and repeated deployments. Preset visual assets are stored under `moments/static/ciallo/`.
 
 ## Asset Notice
 

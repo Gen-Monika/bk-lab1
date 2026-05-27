@@ -31,8 +31,8 @@
                             {% endif %}
                         </div>
                         <p class="moment-text">{{ status.text }}</p>
-                        {% if status.uploaded_image %}
-                            <img class="moment-image" src="{{ status.uploaded_image.url }}" alt="Uploaded moment image">
+                        {% if status.uploaded_image_src %}
+                            <img class="moment-image" src="{{ status.uploaded_image_src }}" alt="Uploaded moment image">
                         {% elif status.pics %}
                             <img class="moment-image" src="{{ BK_STATIC_URL }}/static/{{ status.pics }}" alt="Moment image">
                         {% endif %}

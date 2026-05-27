@@ -22,10 +22,23 @@ class Status(models.Model):
     text = models.CharField(max_length=280)
     pics = models.CharField(max_length=100, null=True, blank=True)
     uploaded_image = models.FileField(upload_to="ciallo_uploads/", null=True, blank=True)
+    uploaded_image_data_url = models.TextField(blank=True)
     pub_time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.text
+
+    @property
+    def uploaded_image_src(self):
+        if self.uploaded_image_data_url:
+            return self.uploaded_image_data_url
+        if self.uploaded_image:
+            try:
+                if self.uploaded_image.storage.exists(self.uploaded_image.name):
+                    return self.uploaded_image.url
+            except (OSError, ValueError):
+                return ""
+        return ""
 
     @property
     def author(self):

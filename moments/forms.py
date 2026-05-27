@@ -1,3 +1,5 @@
+import base64
+import mimetypes
 import os
 
 from django import forms
@@ -90,6 +92,20 @@ class StatusForm(forms.ModelForm):
         if uploaded.size > MAX_UPLOAD_SIZE:
             raise forms.ValidationError("Image size must be 3MB or smaller.")
         return uploaded
+
+    def save(self, commit=True):
+        status = super().save(commit=False)
+        uploaded = self.cleaned_data.get("uploaded_image")
+        if uploaded:
+            content_type = mimetypes.guess_type(uploaded.name)[0] or getattr(uploaded, "content_type", "")
+            content_type = content_type or "application/octet-stream"
+            payload = base64.b64encode(uploaded.read()).decode("ascii")
+            status.uploaded_image_data_url = f"data:{content_type};base64,{payload}"
+            status.uploaded_image = None
+        if commit:
+            status.save()
+            self.save_m2m()
+        return status
 
 
 class CommentForm(forms.ModelForm):
