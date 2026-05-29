@@ -20,6 +20,7 @@
                 {% endif %}
             </div>
             <div class="nav-user">
+                <button class="guide-help-button" type="button" data-guide-open>Help</button>
                 {% if chat_user %}
                     <span>{{ chat_user.nickname }}</span>
                     <a href="{{ SITE_URL }}login/">Switch</a>
@@ -42,10 +43,163 @@
             {% block content %}{% endblock %}
         </main>
 
+
+
+        <section class="guide-modal" id="guideModal" aria-modal="true" role="dialog" aria-labelledby="guideTitle" hidden>
+            <div class="guide-backdrop" data-guide-close></div>
+            <div class="guide-dialog">
+                <button class="guide-close" type="button" data-guide-close aria-label="Close">×</button>
+                <div class="guide-slide active" data-guide-slide>
+                    <figure><img src="{{ BK_STATIC_URL }}/static/ciallo/help/lab1-home.jpg" alt="CialloChat moments feed"></figure>
+                    <article>
+                        <p class="guide-kicker">Lab 1 · CialloChat</p>
+                        <h2 id="guideTitle">社交动态主流程</h2>
+                        <p>应用在蓝鲸登录外层之内实现独立账号体系，进入后可以浏览朋友圈、查看点赞成员和评论区。</p>
+                        <ul>
+                            <li>支持应用内账号切换与默认管理员。</li>
+                            <li>动态列表展示用户头像、背景、发布时间和互动信息。</li>
+                            <li>重复部署后动态数据继续由数据库维护。</li>
+                        </ul>
+                    </article>
+                </div>
+                <div class="guide-slide" data-guide-slide>
+                    <figure><img src="{{ BK_STATIC_URL }}/static/ciallo/help/lab1-post.jpg" alt="Post moment form"></figure>
+                    <article>
+                        <p class="guide-kicker">发布能力</p>
+                        <h2>发朋友圈与图片上传</h2>
+                        <p>发布页支持文本、预设背景和上传图片，上传内容会被转为可持久化记录，避免预发布环境重建后只剩默认图标。</p>
+                        <ul>
+                            <li>限制图片类型和大小，降低异常上传风险。</li>
+                            <li>发布后自动回到动态流，形成完整闭环。</li>
+                        </ul>
+                    </article>
+                </div>
+                <div class="guide-slide" data-guide-slide>
+                    <figure><img src="{{ BK_STATIC_URL }}/static/ciallo/help/lab1-reply.jpg" alt="Reply and likes"></figure>
+                    <article>
+                        <p class="guide-kicker">互动扩展</p>
+                        <h2>点赞、评论与指定回复</h2>
+                        <p>动态支持点赞成员展示、评论头像、评论时间和针对某条评论的回复，让基础朋友圈从展示页升级为可交互页面。</p>
+                        <ul>
+                            <li>评论区展示发言者头像和时间。</li>
+                            <li>可以选择他人评论并进行回复。</li>
+                        </ul>
+                    </article>
+                </div>
+                <div class="guide-slide" data-guide-slide>
+                    <figure><img src="{{ BK_STATIC_URL }}/static/ciallo/help/lab1-profile.jpg" alt="Profile customization"></figure>
+                    <article>
+                        <p class="guide-kicker">个性化</p>
+                        <h2>头像、背景和个人资料</h2>
+                        <p>个人页允许配置昵称、头像、背景和简介，素材选择用于体现应用个性化，同时保留课程演示用途说明。</p>
+                        <ul>
+                            <li>支持多个头像和背景主题。</li>
+                            <li>历史动态与资料编辑分区展示。</li>
+                        </ul>
+                    </article>
+                </div>
+                <div class="guide-slide" data-guide-slide>
+                    <figure><img src="{{ BK_STATIC_URL }}/static/ciallo/help/lab1-admin.jpg" alt="Admin moderation panel"></figure>
+                    <article>
+                        <p class="guide-kicker">管理能力</p>
+                        <h2>管理员内容管理</h2>
+                        <p>默认管理员可以进入管理面板，对用户动态和内容进行维护，补足课程项目的基本运营管理能力。</p>
+                        <ul>
+                            <li>区分普通用户和管理员入口。</li>
+                            <li>管理员可清理不合适的动态内容。</li>
+                        </ul>
+                    </article>
+                </div>
+                <div class="guide-footer">
+                    <button class="guide-nav" type="button" id="guidePrev">Previous</button>
+                    <div class="guide-dots" id="guideDots" aria-label="Guide pages"></div>
+                    <button class="guide-nav primary" type="button" id="guideNext">Next</button>
+                </div>
+            </div>
+        </section>
         <footer class="site-footer">
             <span>Course demo only. Visual assets belong to their respective rights holders.</span>
         </footer>
         <script src="{{ BK_STATIC_URL }}/static/js/jquery-1.11.2.min.js"></script>
         <script src="{{ BK_STATIC_URL }}/static/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
+
+        <script>
+        (function () {
+            const storageKey = "ciallochat.guide.seen.v1";
+            const modal = document.getElementById("guideModal");
+            if (!modal) return;
+            const slides = Array.from(modal.querySelectorAll("[data-guide-slide]"));
+            const prev = document.getElementById("guidePrev");
+            const next = document.getElementById("guideNext");
+            const dots = document.getElementById("guideDots");
+            let index = 0;
+
+            function storageGet() {
+                try { return window.localStorage.getItem(storageKey); } catch (error) { return "1"; }
+            }
+
+            function storageSet() {
+                try { window.localStorage.setItem(storageKey, "1"); } catch (error) { return; }
+            }
+
+            function render() {
+                slides.forEach((slide, slideIndex) => {
+                    slide.classList.toggle("active", slideIndex === index);
+                });
+                dots.innerHTML = slides.map((_, dotIndex) => `<button type="button" class="${dotIndex === index ? "active" : ""}" data-guide-dot="${dotIndex}" aria-label="Go to page ${dotIndex + 1}"></button>`).join("");
+                prev.disabled = index === 0;
+                next.textContent = index === slides.length - 1 ? "Done" : "Next";
+            }
+
+            function openGuide(autoOpen) {
+                index = 0;
+                render();
+                modal.hidden = false;
+                document.body.classList.add("guide-open");
+                if (autoOpen) storageSet();
+            }
+
+            function closeGuide() {
+                modal.hidden = true;
+                document.body.classList.remove("guide-open");
+            }
+
+            document.querySelectorAll("[data-guide-open]").forEach((button) => {
+                button.addEventListener("click", () => openGuide(false));
+            });
+            modal.querySelectorAll("[data-guide-close]").forEach((button) => {
+                button.addEventListener("click", closeGuide);
+            });
+            prev.addEventListener("click", () => {
+                index = Math.max(0, index - 1);
+                render();
+            });
+            next.addEventListener("click", () => {
+                if (index === slides.length - 1) {
+                    closeGuide();
+                    return;
+                }
+                index += 1;
+                render();
+            });
+            dots.addEventListener("click", (event) => {
+                const button = event.target.closest("[data-guide-dot]");
+                if (!button) return;
+                index = Number(button.dataset.guideDot);
+                render();
+            });
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && !modal.hidden) closeGuide();
+            });
+            function isMainFrontendPage() {
+                const normalized = window.location.pathname.replace(/\/+$/, "");
+                return normalized === "" || normalized.endsWith("/status") || /\/stag--[^/]+$/.test(normalized);
+            }
+
+            if (isMainFrontendPage() && storageGet() !== "1") {
+                window.setTimeout(() => openGuide(true), 450);
+            }
+        })();
+        </script>
     </body>
 </html>

@@ -10,6 +10,7 @@ CialloChat is a BlueKing Django SaaS course project. It keeps BlueKing as the ou
 - Django admin integration for users, moments, comments, likes and behavior logs.
 - User action logging middleware that records request method, path, status code, BlueKing user and current CialloChat user.
 - Responsive UI with CialloChat branding and curated course demo visual assets.
+- Paged Help guide with feature screenshots. The guide opens once on the main frontend page and can be reopened from the navigation bar.
 
 ## Account Model
 
@@ -70,6 +71,8 @@ python manage.py migrate --no-input
 ```
 
 Uploaded moment images are encoded into database-backed data URLs so user posts survive BlueKing container rebuilds and repeated deployments. Preset visual assets are stored under `moments/static/ciallo/`.
+
+The feature guide uses compressed screenshots stored under `moments/static/ciallo/help/` so the course evaluator can quickly review the implemented base and extended functions from the frontend.
 
 ## Asset Notice
 

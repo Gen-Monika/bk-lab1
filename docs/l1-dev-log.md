@@ -103,3 +103,23 @@ Fixed a deployment persistence issue where user-uploaded moment images could dis
 ### Verification
 
 - Added automated coverage confirming uploaded images are rendered from database data URLs.
+
+## Frontend Feature Guide
+
+Date: 2026-05-29
+
+### Summary
+
+Added a paged Help guide to the CialloChat frontend so course evaluators can review implemented base and extended features directly from the application.
+
+### Changes
+
+- Added a `Help` button to the navigation bar.
+- Added a first-visit guide modal for the main frontend page using `localStorage` so it opens once and can be reopened manually.
+- Added guide pages for the moments feed, post and upload flow, likes and threaded replies, profile customization, and administrator moderation.
+- Added compressed guide screenshots under `moments/static/ciallo/help/`.
+
+### Verification
+
+- Parsed the updated Django template successfully.
+- Checked the embedded guide JavaScript syntax with `node --check`.
